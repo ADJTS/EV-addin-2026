@@ -104,14 +104,15 @@
   // Rules configuration page is #rules.
   var RULES_PAGE_HASH = "rules";
 
-  // "Charge & Fuel Map" companion add-in. CHARGE_MAP_HASH is the page name
-  // MyGeotab gives that add-in's menu item - if the button below opens the
-  // wrong page, open "Charge & Fuel Map" from the MyGeotab menu once, copy the
-  // text after "#" in the browser address bar, and paste it here.
-  // CHARGE_MAP_URL is a fallback: the public https address of the map page;
-  // used to open it in a new browser tab if in-app navigation fails.
-  var CHARGE_MAP_HASH = "chargeFuelMap";
-  var CHARGE_MAP_URL = "";
+  // "Charge & Fuel Map" companion add-in. CHARGE_MAP_HASH was a guess
+  // ("ChargeFuelMap") and confirmed NOT to be the real page hash - the
+  // button currently opens CHARGE_MAP_URL in a new tab instead (see the
+  // click handler below), which is confirmed working. To restore proper
+  // in-app navigation: open "Charge & Fuel Map" from the MyGeotab menu
+  // once, copy the text after "#" in the browser address bar, paste it
+  // below, then change the click handler back to try the hash first.
+  var CHARGE_MAP_HASH = "ChargeFuelMap";
+  var CHARGE_MAP_URL = "https://adjts.github.io/transscope-geotab-addins/charge-map/geotab-charge-map%20V1/index.html";
 
   // Inline icon glyphs (SVG, no external icon font/CDN) for the Charging
   // Status cards - sized via CSS (width/height: 1em) rather than fixed
@@ -1147,11 +1148,12 @@
 
         elRefreshBtn.addEventListener("click", function () { refresh(api); });
         if (elChargeMapBtn) elChargeMapBtn.addEventListener("click", function () {
-          try {
-            window.parent.location.hash = CHARGE_MAP_HASH;
-          } catch (err) {
-            if (CHARGE_MAP_URL) window.open(CHARGE_MAP_URL, "_blank", "noopener");
-          }
+          // CHARGE_MAP_HASH is an unconfirmed guess (see the comment above
+          // its declaration) - reported not to open the right page. Opening
+          // CHARGE_MAP_URL directly is confirmed working today, so that's
+          // the primary path until the real hash is confirmed; swap this
+          // back to the try/hash-then-catch/URL pattern once it is.
+          window.open(CHARGE_MAP_URL, "_blank", "noopener");
         });
         bindRowActions(elTableBody);
         bindRowActions(elOtherTableBody);

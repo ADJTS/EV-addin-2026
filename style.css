@@ -173,6 +173,26 @@
 }
 .evfd-icon-btn:hover, .evfd-theme-toggle:hover { transform: translateY(-1px); border-color: var(--evfd-accent); }
 
+/* "Charge & Fuel Map" link-out button: bigger and copper/brass-colored so
+   it reads as its own distinct action (opening a separate add-in) rather
+   than blending in with the neutral icon buttons - an icon-only button
+   with just a hover tooltip wasn't clear enough that it links elsewhere,
+   so this one always shows its label. */
+.evfd-chargemap-btn {
+  font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  border-radius: 6px; border: 1px solid var(--evfd-brass);
+  background: var(--evfd-brass-soft); color: var(--evfd-brass);
+  padding: 8px 14px; box-shadow: var(--evfd-shadow-sm);
+  transition: transform .15s ease, filter .15s ease;
+}
+.evfd-chargemap-btn svg { flex-shrink: 0; }
+.evfd-chargemap-btn:hover { transform: translateY(-1px); box-shadow: var(--evfd-shadow); }
+@media (max-width: 720px) {
+  .evfd-chargemap-btn span { display: none; }
+  .evfd-chargemap-btn { padding: 8px 11px; }
+}
+
 /* Dark-mode toggle: TCO-style icon button with a sun/moon glyph swap
    (driven purely by CSS off the existing [data-theme] attribute - no JS
    change needed beyond the button's inner SVG markup). */
