@@ -1,7 +1,7 @@
 {
   "name": "EV Fleet Dashboard",
   "supportEmail": "servicedesk@transscope.nl",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "items": [
     {
       "url": "index.html",

@@ -104,14 +104,15 @@
   // Rules configuration page is #rules.
   var RULES_PAGE_HASH = "rules";
 
-  // "Charge & Fuel Map" companion add-in. CHARGE_MAP_HASH was a guess
-  // ("ChargeFuelMap") and confirmed NOT to be the real page hash - the
-  // button currently opens CHARGE_MAP_URL in a new tab instead (see the
-  // click handler below), which is confirmed working. To restore proper
-  // in-app navigation: open "Charge & Fuel Map" from the MyGeotab menu
-  // once, copy the text after "#" in the browser address bar, paste it
-  // below, then change the click handler back to try the hash first.
-  var CHARGE_MAP_HASH = "ChargeFuelMap";
+  // "Charge & Fuel Map" companion add-in. CHARGE_MAP_HASH is confirmed by
+  // the user directly from their MyGeotab address bar. In-app navigation
+  // matters here, not just for consistency with Trips/Localize: that add-in
+  // has its own STANDALONE self-bootstrap (same pattern this build used to
+  // have) that renders demo/fictional vehicles whenever it's opened outside
+  // MyGeotab - so opening CHARGE_MAP_URL in a new tab can only ever show
+  // the demo, never real fleet data. CHARGE_MAP_URL is now only a fallback
+  // for the rare case where setting window.parent.location.hash throws.
+  var CHARGE_MAP_HASH = "addin-chargefuelmap-index";
   var CHARGE_MAP_URL = "https://adjts.github.io/transscope-geotab-addins/charge-map/geotab-charge-map%20V1/index.html";
 
   // Inline icon glyphs (SVG, no external icon font/CDN) for the Charging
@@ -1148,12 +1149,17 @@
 
         elRefreshBtn.addEventListener("click", function () { refresh(api); });
         if (elChargeMapBtn) elChargeMapBtn.addEventListener("click", function () {
-          // CHARGE_MAP_HASH is an unconfirmed guess (see the comment above
-          // its declaration) - reported not to open the right page. Opening
-          // CHARGE_MAP_URL directly is confirmed working today, so that's
-          // the primary path until the real hash is confirmed; swap this
-          // back to the try/hash-then-catch/URL pattern once it is.
-          window.open(CHARGE_MAP_URL, "_blank", "noopener");
+          try {
+            window.parent.location.hash = CHARGE_MAP_HASH;
+          } catch (err) {
+            // Same-origin access to window.parent can throw if MyGeotab ever
+            // sandboxes the Add-In iframe without allow-same-origin. Falling
+            // back to a new tab only shows that add-in's own demo data (see
+            // the comment above CHARGE_MAP_HASH), but it's better than a
+            // silent no-op click.
+            console.error("EV Fleet Dashboard: couldn't set window.parent.location.hash", err);
+            window.open(CHARGE_MAP_URL, "_blank", "noopener");
+          }
         });
         bindRowActions(elTableBody);
         bindRowActions(elOtherTableBody);
